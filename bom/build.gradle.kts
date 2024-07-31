@@ -22,6 +22,18 @@ dependencies {
 }
 
 publishing {
+    repositories {
+        maven {
+            name = "simulatanRepositorySnapshots"
+            url = uri("https://maven.simulatan.me/snapshots")
+            credentials(PasswordCredentials::class)
+        }
+        maven {
+            name = "simulatanRepositoryReleases"
+            url = uri("https://maven.simulatan.me/releases")
+            credentials(PasswordCredentials::class)
+        }
+    }
     publications {
         create<MavenPublication>("bom") {
             groupId = project.group.toString()

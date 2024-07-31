@@ -28,6 +28,17 @@ fun PublishingExtension.configurePublication() {
         configureSonatypeRepository()
         configureSpaceRepository()
         configureLocalDevRepository()
+
+        maven {
+            name = "simulatanRepositorySnapshots"
+            url = uri("https://maven.simulatan.me/snapshots")
+            credentials(PasswordCredentials::class)
+        }
+        maven {
+            name = "simulatanRepositoryReleases"
+            url = uri("https://maven.simulatan.me/releases")
+            credentials(PasswordCredentials::class)
+        }
     }
 
     configureJvmPublicationIfNeeded()

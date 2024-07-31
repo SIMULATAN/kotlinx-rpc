@@ -13,6 +13,10 @@ class CompilerPluginCore : KotlinCompilerPluginSupportPlugin by compilerPlugin({
     pluginSuffix = "-core"
 })
 
+class CompilerPlugin2_0 : KotlinCompilerPluginSupportPlugin by compilerPlugin({
+    pluginSuffix = "-2_0"
+})
+
 class CompilerPlugin1_9 : KotlinCompilerPluginSupportPlugin by compilerPlugin({
     pluginSuffix = "-1_9"
 })
@@ -37,6 +41,7 @@ fun compilerPluginForKotlin(kotlin: String): Class<out Plugin<*>> {
         kotlin.startsWith("1.7.2") -> CompilerPlugin1_7_2::class.java
         kotlin.startsWith("1.8") -> CompilerPlugin1_8::class.java
         kotlin.startsWith("1.9") -> CompilerPlugin1_9::class.java
+        kotlin.startsWith("2.0") -> CompilerPlugin2_0::class.java
         else -> error("Unsupported kotlin version: $kotlin")
     }
 }
