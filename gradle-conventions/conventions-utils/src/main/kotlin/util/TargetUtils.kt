@@ -8,10 +8,10 @@ import groovy.json.JsonSlurper
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import org.gradle.api.Action
 import org.gradle.api.Project
-import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.kotlin.dsl.the
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 import java.io.File
 import kotlin.reflect.full.memberFunctions
 
@@ -40,6 +40,7 @@ private fun isIncluded(targetName: String, kotlinVersion: String, lookupTable: M
     } ?: false
 }
 
+@OptIn(ExperimentalWasmDsl::class)
 private fun KotlinMultiplatformExtension.configureTargets(
     project: Project,
     kotlinVersion: String,
@@ -47,6 +48,7 @@ private fun KotlinMultiplatformExtension.configureTargets(
     jvm: Boolean = true,
     js: Boolean = true,
     native: Boolean = true,
+    wasmJs: Boolean = true,
 ): List<KotlinTarget> {
     val targets = mutableListOf<KotlinTarget>()
 
@@ -92,6 +94,12 @@ private fun KotlinMultiplatformExtension.configureTargets(
             browser()
         }.also { targets.add(it) }
     }
+    if (wasmJs && isIncluded("wasmJs", kotlinVersion, targetsLookup)) {
+        wasmJs {
+            browser()
+            nodejs()
+        }.also { targets.add(it) }
+    }
 
     targets.forEach { target ->
         target.mavenPublication {
@@ -114,6 +122,7 @@ fun Project.configureKotlin(
     jvm: Boolean = true,
     js: Boolean = true,
     native: Boolean = true,
+    wasmJs: Boolean = true,
     action: Action<KotlinMultiplatformExtension> = Action { },
 ) {
     val kotlinVersion = libs.versions.kotlin.lang.get()
@@ -124,7 +133,7 @@ fun Project.configureKotlin(
     }
 
     kotlin {
-        val includedTargets = configureTargets(project, kotlinVersion, lookupTable, jvm, js, native)
+        val includedTargets = configureTargets(project, kotlinVersion, lookupTable, jvm, js, native, wasmJs)
 
         configureDetekt(includedTargets)
 

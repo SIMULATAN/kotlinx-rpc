@@ -22,9 +22,11 @@ configure<KotlinMultiplatformExtension> {
 val excludeJs: Boolean by optionalProperty()
 val excludeJvm: Boolean by optionalProperty()
 val excludeNative: Boolean by optionalProperty()
+val excludeWasmJs: Boolean by optionalProperty()
 
 configureKotlin(
     jvm = !excludeJvm,
     js = !excludeJs,
     native = !excludeNative,
+    wasmJs = !excludeWasmJs
 )
